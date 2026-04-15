@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loaded-dice/schema/loaded-dice.schema.json",
+  "title": "loaded-dice config",
+  "description": "Configuration schema for the loaded-dice Claude Code plugin",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "session_model": {
+      "type": "string",
+      "description": "Model selection mode: 'auto' lets loaded-dice decide, or specify a tier name",
+      "enum": ["auto", "haiku", "sonnet", "opus"]
+    },
+    "prompt_mode": {
+      "type": "string",
+      "description": "How loaded-dice surfaces routing suggestions",
+      "enum": ["suggest", "auto", "silent"]
+    },
+    "confidence_threshold": {
+      "type": "number",
+      "description": "Minimum classification confidence to act on (0.0–1.0)",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "default_tier": {
+      "type": "string",
+      "description": "Fallback tier when classification is inconclusive",
+      "enum": ["haiku", "sonnet", "opus"]
+    },
+    "bypass_prefix": {
+      "type": "string",
+      "description": "Prefix character(s) that bypass routing entirely",
+      "minLength": 1
+    },
+    "session_timeout_minutes": {
+      "type": "integer",
+      "description": "Minutes of inactivity before session momentum resets",
+      "minimum": 1
+    },
+    "momentum_decay_after": {
+      "type": "integer",
+      "description": "Number of same-tier calls before momentum decays",
+      "minimum": 0
+    },
+    "suggest_switch_after": {
+      "type": "integer",
+      "description": "Consecutive off-tier prompts before suggesting a switch",
+      "minimum": 0
+    },
+    "llm_fallback": {
+      "type": "boolean",
+      "description": "Fall back to LLM classification when keyword/pattern matching is inconclusive"
+    },
+    "analytics": {
+      "type": "boolean",
+      "description": "Emit routing analytics events"
+    },
+    "tiers": {
+      "type": "object",
+      "description": "Per-tier keyword/pattern routing configuration",
+      "additionalProperties": false,
+      "properties": {
+        "haiku": { "$ref": "#/$defs/tierConfig" },
+        "sonnet": { "$ref": "#/$defs/tierConfig" },
+        "opus": { "$ref": "#/$defs/tierConfig" }
+      }
+    }
+  },
+  "$defs": {
+    "tierConfig": {
+      "type": "object",
+      "description": "Routing config for a single model tier",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "Merge strategy when combining with parent config",
+          "enum": ["extend", "replace"]
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Exact-match keywords that route to this tier",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "patterns": {
+          "type": "array",
+          "description": "Regex patterns that route to this tier",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "remove_keywords": {
+          "type": "array",
+          "description": "Keywords to remove from the merged keyword list (extend mode only)",
+          "items": { "type": "string" }
+        },
+        "remove_patterns": {
+          "type": "array",
+          "description": "Patterns to remove from the merged pattern list (extend mode only)",
+          "items": { "type": "string" }
+        },
+        "max_word_count": {
+          "type": "integer",
+          "description": "Prompts under this word count are candidates for this tier (haiku)",
+          "minimum": 1
+        },
+        "force_min_word_count": {
+          "type": "integer",
+          "description": "Prompts over this word count are forced to this tier (opus)",
+          "minimum": 1
+        }
+      },
+      "required": ["mode", "keywords", "patterns", "remove_keywords", "remove_patterns"]
+    }
+  }
+}
