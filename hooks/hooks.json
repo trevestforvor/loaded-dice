@@ -2,24 +2,36 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "type": "command",
-        "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/classify-prompt.py\"",
-        "timeout": 15
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/classify-prompt.py",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "PreToolUse": [
       {
-        "type": "command",
-        "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/enforce-routing.py\"",
-        "timeout": 10,
-        "matcher": "Agent"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/enforce-routing.py",
+            "timeout": 10,
+            "matcher": "Agent"
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "type": "command",
-        "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/track-session.py\"",
-        "timeout": 5
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/track-session.py",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }
