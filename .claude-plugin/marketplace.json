@@ -1,0 +1,24 @@
+{
+  "name": "loaded-dice",
+  "owner": {
+    "name": "trevestforvor"
+  },
+  "metadata": {
+    "description": "Intelligent model routing for Claude Code",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "loaded-dice",
+      "source": "./",
+      "description": "Intelligent model routing for Claude Code — classifies prompts and subagent dispatches by complexity, delegates to the right tier automatically",
+      "version": "0.1.0",
+      "author": {
+        "name": "trevestforvor"
+      },
+      "category": "development",
+      "keywords": ["model-routing", "cost-optimization", "subagent", "haiku", "sonnet", "opus"],
+      "homepage": "https://github.com/trevestforvor/loaded-dice"
+    }
+  ]
+}
