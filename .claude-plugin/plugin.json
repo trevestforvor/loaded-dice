@@ -16,5 +16,4 @@
     "./skills/dice-mode/SKILL.md",
     "./skills/dice-switch/SKILL.md"
   ],
-  "hooks": "./hooks/hooks.json"
 }
