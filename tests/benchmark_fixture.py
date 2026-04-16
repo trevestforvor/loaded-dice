@@ -190,4 +190,28 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("how should we structure the database for offline support?", "opus", "natural-opus"),
     ("what's the best approach for handling auth across all our services?", "opus", "natural-opus"),
     ("we need a strategy for migrating the entire backend", "opus", "natural-opus"),
+
+    # =========================================================================
+    # FALSE ROUTING PREVENTION — adversarial cases for tier boundaries
+    # =========================================================================
+    # Sonnet tasks with opus-adjacent keywords (should NOT escalate)
+    ("add a compare function to the utils", "sonnet", "false-escalation"),
+    ("update the architecture diagram", "sonnet", "false-escalation"),
+    ("debug the crash on launch", "sonnet", "false-escalation"),
+    ("fix the security bug in login", "sonnet", "false-escalation"),
+    ("fix the performance test", "sonnet", "false-escalation"),
+    ("add a trade-off section to the docs", "sonnet", "false-escalation"),
+
+    # Haiku questions with opus words (should NOT escalate)
+    ("what is a design pattern?", "haiku", "false-escalation-haiku"),
+    ("what does optimize mean?", "haiku", "false-escalation-haiku"),
+
+    # Opus tasks that sound simple (should NOT demote)
+    ("we need to rethink how auth works across the app", "opus", "false-demotion"),
+    ("can you analyze why performance degrades under load?", "opus", "false-demotion"),
+
+    # Follow-up triggers with real tasks (hook handles, but classifier should still route correctly)
+    ("also add a cancel button", "sonnet", "followup-with-task"),
+    ("and then implement the save function", "sonnet", "followup-with-task"),
+    ("ok now build the settings screen", "sonnet", "followup-with-task"),
 ]

@@ -118,27 +118,45 @@ class SessionState:
             return recent[0]
         return None
 
+    # Implementation verbs that indicate a real task, not a conversational follow-up.
+    # Query verbs (explain, show, check, describe) are excluded — they're
+    # compatible with follow-up context ("also, can you explain?").
+    _IMPL_VERBS_RE = re.compile(
+        r"\b(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|"
+        r"delete|remove|run|update|install|close|start|stop|design|architect|plan|"
+        r"analyze|debug|make|set up|move|rename|migrate|optimize|audit|configure)\b",
+        re.IGNORECASE,
+    )
+
     def is_follow_up(self, prompt: str) -> bool:
         """Return True if prompt looks like a conversational follow-up.
 
         Criteria:
         - Fewer than 8 words, AND
         - Starts with a recognised follow-up trigger word/phrase,
-          OR is an ultra-short acknowledgement (≤2 words).
+          AND does not contain an action verb (which means it's a
+          task prefixed with a conversational word, not a follow-up).
+        - OR is an ultra-short acknowledgement (≤2 words) without action verbs.
         """
         words = prompt.split()
         if len(words) >= 8:
             return False
-        if bool(_FOLLOW_UP_PATTERNS.match(prompt.strip())):
+        stripped = prompt.strip()
+        if bool(_FOLLOW_UP_PATTERNS.match(stripped)):
+            # "yes" is a follow-up, but "yes please add that feature" is a task
+            if self._IMPL_VERBS_RE.search(stripped):
+                return False
             return True
-        # Ultra-short prompts (≤2 words) that aren't action verbs
-        # are almost always confirmations or reactions.
+        # Ultra-short prompts (≤2 words) without ANY verb (impl or query)
         if len(words) <= 2:
-            _action_re = re.compile(
-                r"^(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|delete|remove|explain|describe|show|list|run|check|update|install|open|close|start|stop)\b",
+            _any_verb = re.compile(
+                r"^(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|"
+                r"delete|remove|run|update|install|close|start|stop|design|architect|plan|"
+                r"analyze|debug|make|move|rename|migrate|optimize|audit|configure|"
+                r"explain|describe|show|list|check|open|read|find|search|get)\b",
                 re.IGNORECASE,
             )
-            if not _action_re.match(prompt.strip()):
+            if not _any_verb.match(stripped):
                 return True
         return False
 

@@ -14,7 +14,8 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         # Questions — factual lookups
         r"^what (is|are|does) ",
         r"^how (do|does|to) ",
-        r"^(can|does|is|are|do|did|will|should) (it|this|that|the|we|I|you)\b",
+        r"^(does|is|are|did|will|should) (it|this|that|the|we|I|you)\b",
+        r"^(can|do) (you|we|I)\b.{0,10}\b(show|tell|explain|check|see|look|find|get|read)\b",
         r"^where (is|are|did|do|does) ",
         r"^(show|list|get) .{0,30}$",
         # Formatting / linting
@@ -57,14 +58,16 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         r"\b(can you|could you|please|help me|I need to|let's|let me)\b.{0,30}\b(add|fix|build|create|implement|write|make|update)\b",
     ],
     "opus": [
-        # Architecture / design
-        r"\b(architect|architecture|design pattern|system design)\b",
+        # Architecture / design (require design-intent context, not just mentions)
+        r"\b(architect|design pattern|system design)\b",
+        r"\barchitecture\b.{0,20}\b(for|of|review|design|plan|decision)\b",
         # Multi-file / cross-cutting
         r"\b(across|multiple|all) (files?|components?|modules?)\b",
         r"\brefactor.{0,20}(codebase|project|entire)\b",
-        # Analysis / trade-offs
-        r"\b(trade-?offs?|compare|pros? (and|&) cons?)\b",
-        r"\b(analyze|evaluate|assess).{0,30}(option|approach|strateg|trade-?off)",
+        # Analysis / trade-offs (require analytical framing, not bare keywords)
+        r"\b(trade-?offs?|pros? (and|&) cons?)\b.{0,30}\b(of|between|for|vs)\b",
+        r"\bcompare\b.{0,20}\b(vs\.?|versus|between)\b",
+        r"\b(analyze|evaluate|assess).{0,30}(option|approach|strateg|trade-?off|why|how|performance|bottleneck)",
         # Performance optimization
         r"\boptimiz(e|ation).{0,20}(performance|speed|memory)\b",
         # Planning
@@ -74,12 +77,12 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         # Design (complex scope)
         r"\bredesign\b.{0,20}(navigation|architecture|system|flow)\b",
         r"\bdesign\b.{0,30}\b(layer|schema|model).{0,30}\b(with|and|relationship|migration)\b",
-        # Complex debugging
-        r"\b(debug|diagnos).{0,30}(race|deadlock|leak|crash)\b",
+        # Complex debugging (race conditions, deadlocks, leaks — not simple crashes)
+        r"\b(debug|diagnos).{0,30}(race condition|deadlock|memory leak|retain cycle)\b",
         # Cross-domain
         r"\b(cross-?domain|end-?to-?end|full-?stack)\b",
         # Whole-project scope
-        r"\b(entire|whole) (app|application|project|codebase)\b",
+        r"\b(entire|whole|across the) (app|application|project|codebase)\b",
         r"\b(update|change|modify|handle|manage) .{0,10}(all|every) .{0,20}(screen|view|page|endpoint|module|service)s?\b",
         r"\bacross all\b.{0,20}(screen|view|page|endpoint|module|service)s?\b",
         r"\bstructure\b.{0,30}\b(app|application|project|codebase)\b",
