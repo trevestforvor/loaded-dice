@@ -48,24 +48,14 @@ No changes to `SubagentRouting` or `SessionSummary` events. No backfill of histo
 Defines relative tier cost weights (not absolute prices):
 
 ```python
-DEFAULT_TIER_WEIGHTS = {
+TIER_WEIGHTS = {
     "haiku": 1,
-    "sonnet": 12,
-    "opus": 60,
+    "sonnet": 3,
+    "opus": 5,
 }
 ```
 
-Ratios reflect approximate per-token cost relationships between tiers (haiku as baseline = 1). Configurable via `loaded-dice.json`:
-
-```json
-{
-  "tier_weights": {
-    "haiku": 1,
-    "sonnet": 12,
-    "opus": 60
-  }
-}
-```
+Ratios based on current Anthropic API pricing (April 2026) where input and output per-token ratios are both 1:3:5 across haiku/sonnet/opus. Hardcoded — not user-configurable.
 
 ### 3. Savings Math
 
@@ -124,11 +114,11 @@ Classification:     rules 98 . context 31 . llm 8 . default 5
   not actual account costs.
 
 Direction        Prompts  Words    Savings
-Opus -> Haiku        34    1,240    98.3%
-Opus -> Sonnet       18    3,680    80.0%
-Sonnet -> Haiku      12      580    91.7%
+Opus -> Haiku        34    1,240    80.0%
+Opus -> Sonnet       18    3,680    40.0%
+Sonnet -> Haiku      12      580    66.7%
 
-Overall: ~62% estimated savings vs. running
+Overall: ~47% estimated savings vs. running
 all prompts at session tier
 
 --- Complexity Matches ---------------------
@@ -171,7 +161,6 @@ The current data model (with `word_count` logged) fully supports this future add
 | `lib/pricing.py` | New file — `DEFAULT_TIER_WEIGHTS`, savings calculation functions |
 | `skills/dice-stats/SKILL.md` | Updated display instructions with savings + complexity match sections |
 | `schema/analytics.json` | Updated schema to include `word_count` field |
-| `loaded-dice.json` (user config) | Optional `tier_weights` override |
 | `tests/` | Tests for pricing math, updated analytics tests |
 
 ## Not Changing
