@@ -4,50 +4,60 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+# Maximum log file size before rotation (1 MB)
+_MAX_LOG_BYTES = 1_000_000
+# Number of rotated log files to keep
+_MAX_ROTATED = 2
+
 
 class AnalyticsLogger:
-    """Lightweight NDJSON append-only analytics logger."""
+    """Lightweight NDJSON append-only analytics logger with rotation."""
 
     def __init__(self, log_dir: str = "~/.claude/loaded-dice", enabled: bool = True) -> None:
-        """
-        Initialize the analytics logger.
-
-        Args:
-            log_dir: Directory to store analytics logs. Defaults to ~/.claude/loaded-dice
-            enabled: Whether logging is enabled. Defaults to True
-        """
         self.enabled = enabled
         self.log_dir = Path(log_dir).expanduser()
         self.log_file = self.log_dir / "analytics.ndjson"
 
+    def _rotate_if_needed(self) -> None:
+        """Rotate log file if it exceeds _MAX_LOG_BYTES."""
+        try:
+            if not self.log_file.exists():
+                return
+            if self.log_file.stat().st_size < _MAX_LOG_BYTES:
+                return
+
+            # Shift existing rotated files: .2 → delete, .1 → .2
+            for i in range(_MAX_ROTATED, 0, -1):
+                src = self.log_dir / f"analytics.{i}.ndjson"
+                if i == _MAX_ROTATED:
+                    src.unlink(missing_ok=True)
+                elif src.exists():
+                    dst = self.log_dir / f"analytics.{i + 1}.ndjson"
+                    src.rename(dst)
+
+            # Current → .1
+            rotated = self.log_dir / "analytics.1.ndjson"
+            self.log_file.rename(rotated)
+        except OSError:
+            pass
+
     def log(self, event: dict[str, Any]) -> None:
-        """
-        Log an event to the analytics file.
-
-        Adds a "ts" field with UTC ISO format timestamp and appends as a JSON line.
-        Creates the log directory if needed. Silently ignores OSError.
-
-        Args:
-            event: Dictionary of event data to log
-        """
+        """Append an event as a JSON line with UTC timestamp."""
         if not self.enabled:
             return
 
         try:
-            # Create directory if it doesn't exist
             self.log_dir.mkdir(parents=True, exist_ok=True)
+            self._rotate_if_needed()
 
-            # Add timestamp in UTC ISO format
             event_with_ts = {
                 "ts": datetime.now(timezone.utc).isoformat(),
                 **event,
             }
 
-            # Append as NDJSON line
             with open(self.log_file, "a", encoding="utf-8") as f:
                 f.write(json.dumps(event_with_ts) + "\n")
         except OSError:
-            # Silently ignore file system errors
             pass
 
     def read_all(self) -> list[dict[str, Any]]:
