@@ -76,6 +76,32 @@ def main() -> None:
     signals = result["signals"]
 
     session_model = _detect_session_model(config)
+
+    # Follow-ups and confirmations don't need delegation — the session
+    # model should handle them inline. Skip the suggestion entirely.
+    is_followup = session.is_follow_up(prompt)
+    if is_followup:
+        session.record_routing(session_model, session_model)
+        session.save()
+        analytics = AnalyticsLogger(
+            log_dir=os.path.expanduser(state_dir),
+            enabled=config.get("analytics", True),
+        )
+        analytics.log({
+            "event": "PromptClassified",
+            "prompt_preview": prompt[:120],
+            "word_count": len(prompt.split()),
+            "tier": session_model,
+            "confidence": 1.0,
+            "signals": ["follow-up"],
+            "source": "passthrough",
+            "session_model": session_model,
+            "delegated": False,
+        })
+        # No output = no delegation suggestion
+        print(json.dumps({"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": ""}}))
+        return
+
     session.record_routing(tier, session_model)
 
     messages = []
