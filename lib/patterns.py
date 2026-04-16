@@ -42,6 +42,7 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         r"\b(plan|planning|roadmap)\b.{0,30}(implement|migration|phase|rollout|payment|system)\b",
         r"\b(security|vulnerab|audit)\b.{0,30}(review|scan|check|vulnerab|api|flow|code)\b",
         r"\bredesign\b.{0,20}(navigation|architecture|system|flow)\b",
+        r"\bdesign\b.{0,30}\b(layer|schema|model).{0,30}\b(with|and|relationship|migration)\b",
         r"\b(debug|diagnos).{0,30}(race|deadlock|leak|crash)\b",
         r"\b(cross-?domain|end-?to-?end|full-?stack)\b",
     ],

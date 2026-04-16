@@ -13,7 +13,7 @@ from typing import Optional
 
 # Pre-compiled follow-up patterns matched at the START of a prompt (case-insensitive).
 _FOLLOW_UP_PATTERNS = re.compile(
-    r"^(and\b|also\b|what about\b|actually\b|wait\b|yes\b|ok\b|how about\b|then\b)",
+    r"^(and\b|also\b|what about\b|actually\b|wait\b|yes\b|ok\b|no\b|how about\b|then\b|sure\b|nah\b|yeah\b|nope\b|yep\b)",
     re.IGNORECASE,
 )
 
