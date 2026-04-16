@@ -12,13 +12,16 @@ logger = logging.getLogger(__name__)
 DEFAULT_PATTERNS: dict[str, list[str]] = {
     "haiku": [
         # Questions — factual lookups
-        r"^what (is|are|does|did|was|were|happened|changed)\b",
-        r"^how (do|does|to|did|can|should) ",
-        r"^why (is|are|does|do|did|was|were|isn't|aren't|doesn't|won't|can't)\b",
-        r"^(does|is|are|did|will|should|do) (it|this|that|the|we|I|you)\b.{0,10}\b(need|have|want|require|supposed)\b",
-        r"^(does|is|are|did|will|should) (it|this|that|the|we|I|you)\b",
-        r"^(can|do) (you|we|I)\b.{0,10}\b(show|tell|explain|check|see|look|find|get|read|verify|confirm)\b",
-        r"^where (is|are|did|do|does) ",
+        r"^what (is|are|do|does|did|was|were|can|could|would|should|will|might|has|have|had|happened|changed|won't|didn't|hasn't|haven't|about|kind of|type of)\b",
+        r"^how (do|does|to|did|can|could|would|should|will|might|is|are|was|were|many|much|long|often|far|about|come) ",
+        r"^why (is|are|does|do|did|was|were|would|should|has|have|had|isn't|aren't|doesn't|don't|didn't|won't|can't|couldn't|shouldn't|hasn't|haven't|wouldn't)\b",
+        r"^(does|is|are|did|will|should|do|can|could|would|might|shall|has|have|had) (it|this|that|the|we|I|you)\b.{0,10}\b(need|have|want|require|supposed)\b",
+        r"^(does|is|are|did|will|should|do|can|could|would|might|shall|has|have|had) (it|this|that|the|we|I|you)\b",
+        r"^(can|do|could|would|will|should|might) (you|we|I)\b.{0,10}\b(show|tell|explain|check|see|look|find|get|read|verify|confirm)\b",
+        r"^where (is|are|did|do|does|can|could|should|would|will|was|were) ",
+        r"^when (is|are|do|does|did|was|were|will|would|should|can|could|has|have|had) ",
+        r"^which (is|are|do|does|did|was|were|will|would|should|can|could|has|have|had|one|file|version|method|function|class|module|package|library)\b",
+        r"^who(se)? (is|are|was|were|did|does|do|wrote|owns|created|has|have|had|PR|commit|code|branch)\b",
         r"^(show|list|get) .{0,30}$",
         # Formatting / linting
         r"\b(format|lint|prettify|beautify)\b",
