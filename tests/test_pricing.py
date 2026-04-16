@@ -103,7 +103,7 @@ class TestComputeSavings:
         assert len(result["downward"]) == 1
         assert len(result["complexity_matches"]) == 1
 
-    def test_same_tier_events_ignored(self):
+    def test_same_tier_excluded_from_direction_buckets(self):
         events = [
             {"tier": "opus", "session_model": "opus", "word_count": 100},
             {"tier": "haiku", "session_model": "opus", "word_count": 50},
@@ -118,6 +118,19 @@ class TestComputeSavings:
         assert result["overall_savings_pct"] == 0.0
         assert result["downward"] == []
         assert result["complexity_matches"] == []
+
+    def test_negative_savings_when_upward_dominates(self):
+        """When upward routing dominates, overall savings is negative."""
+        events = [
+            {"tier": "opus", "session_model": "haiku", "word_count": 100},
+            {"tier": "opus", "session_model": "haiku", "word_count": 100},
+        ]
+        result = compute_savings(events)
+        # baseline: 2 * 1 * 100 = 200, actual: 2 * 5 * 100 = 1000
+        # savings: (1 - 1000/200) * 100 = -400.0%
+        assert result["overall_savings_pct"] == -400.0
+        assert len(result["downward"]) == 0
+        assert len(result["complexity_matches"]) == 1
 
     def test_events_missing_word_count_skipped(self):
         events = [

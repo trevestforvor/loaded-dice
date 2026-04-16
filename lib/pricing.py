@@ -41,7 +41,9 @@ def compute_savings(events: list[dict]) -> dict:
 
     Returns:
         dict with keys:
-            overall_savings_pct: float — net savings across all events
+            overall_savings_pct: float — net savings across all events.
+                Can be negative when upward routing dominates (more cost
+                than running everything at the session tier).
             downward: list of dicts — per-direction savings for cheaper routing
             complexity_matches: list of dicts — per-direction counts for upward routing
     """
@@ -82,14 +84,14 @@ def compute_savings(events: list[dict]) -> dict:
             key = (session_tier, routed_tier)
             up_prompts[key] = up_prompts.get(key, 0) + 1
 
-    _label = {"opus": "Opus", "sonnet": "Sonnet", "haiku": "Haiku"}
+    _LABEL = {"opus": "Opus", "sonnet": "Sonnet", "haiku": "Haiku"}
     downward = []
     for key in sorted(down_prompts.keys()):
         s_tier, r_tier = key
         baseline = down_baseline_weight[key]
         pct = (down_savings_weight[key] / baseline * 100) if baseline else 0.0
         downward.append({
-            "direction": f"{_label.get(s_tier, s_tier)} -> {_label.get(r_tier, r_tier)}",
+            "direction": f"{_LABEL.get(s_tier, s_tier)} -> {_LABEL.get(r_tier, r_tier)}",
             "prompts": down_prompts[key],
             "words": down_words[key],
             "savings_pct": round(pct, 1),
@@ -99,7 +101,7 @@ def compute_savings(events: list[dict]) -> dict:
     for key in sorted(up_prompts.keys()):
         s_tier, r_tier = key
         complexity_matches.append({
-            "direction": f"{_label.get(s_tier, s_tier)} -> {_label.get(r_tier, r_tier)}",
+            "direction": f"{_LABEL.get(s_tier, s_tier)} -> {_LABEL.get(r_tier, r_tier)}",
             "prompts": up_prompts[key],
         })
 
