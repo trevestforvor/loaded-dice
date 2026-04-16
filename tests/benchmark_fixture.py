@@ -122,10 +122,11 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("make the app faster", "sonnet", "edge-ambiguous"),
     ("clean up this code", "sonnet", "edge-ambiguous"),
 
-    # Follow-up style (short, conversational)
-    ("yes", "haiku", "edge-followup"),
-    ("ok do it", "haiku", "edge-followup"),
-    ("no that's wrong", "haiku", "edge-followup"),
+    # Follow-up style — classifier returns default_tier (sonnet) since
+    # follow-up handling is now in the hook (passthrough, no delegation).
+    ("yes", "sonnet", "edge-followup"),
+    ("ok do it", "sonnet", "edge-followup"),
+    ("no that's wrong", "sonnet", "edge-followup"),
 
     # iOS-specific patterns (domain the user cares about)
     ("add a SwiftUI view for the profile screen", "sonnet", "ios"),
@@ -156,10 +157,11 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("how should we structure the entire app to support offline mode?", "opus", "stress-hidden-opus"),
     ("what's the best way to handle data across all our screens?", "opus", "stress-hidden-opus"),
 
-    # Extremely short valid prompts
-    ("thanks", "haiku", "stress-ultra-short"),
-    ("?", "haiku", "stress-ultra-short"),
-    ("hmm", "haiku", "stress-ultra-short"),
+    # Extremely short valid prompts — classifier returns default_tier,
+    # hook handles as passthrough (no delegation).
+    ("thanks", "sonnet", "stress-ultra-short"),
+    ("?", "sonnet", "stress-ultra-short"),
+    ("hmm", "sonnet", "stress-ultra-short"),
 
     # Multi-intent prompts (contain signals from multiple tiers)
     ("fix the login bug and redesign the auth architecture", "opus", "stress-multi-intent"),

@@ -216,19 +216,10 @@ def classify(prompt: str, config: dict[str, Any], session: SessionState) -> dict
     # Final fallback — default_tier
     # ------------------------------------------------------------------
     if tier is None or confidence < threshold:
-        # Ultra-short confirmations/acknowledgements route to haiku.
-        # Only triggers for prompts that look like follow-ups (detected
-        # by session) regardless of momentum state.
-        if session.is_follow_up(prompt):
-            tier = "haiku"
-            confidence = 0.6
-            signals = []
-            source = "default"
-        else:
-            tier = config.get("default_tier", "sonnet")
-            confidence = 0.6
-            signals = []
-            source = "default"
+        tier = config.get("default_tier", "sonnet")
+        confidence = 0.6
+        signals = []
+        source = "default"
 
     return {
         "tier": tier,
