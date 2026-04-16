@@ -122,9 +122,9 @@ class SessionState:
     # Query verbs (explain, show, check, describe) are excluded — they're
     # compatible with follow-up context ("also, can you explain?").
     _IMPL_VERBS_RE = re.compile(
-        r"\b(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|"
+        r"\b(fix|build|create|implement|add|write|deploy|ship|refactor|redesign|test|review|"
         r"delete|remove|run|update|install|close|start|stop|design|architect|plan|"
-        r"analyze|debug|make|set up|move|rename|migrate|optimize|audit|configure)\b",
+        r"analyze|debug|make|set up|move|rename|migrate|optimize|audit|configure|rewrite|rework)\b",
         re.IGNORECASE,
     )
 

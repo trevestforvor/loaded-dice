@@ -214,4 +214,8 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("also add a cancel button", "sonnet", "followup-with-task"),
     ("and then implement the save function", "sonnet", "followup-with-task"),
     ("ok now build the settings screen", "sonnet", "followup-with-task"),
+    ("actually redesign the navigation", "opus", "followup-with-task"),
+    ("wait, debug the memory leak", "opus", "followup-with-task"),
+    ("then deploy it", "sonnet", "followup-with-task"),
+    ("yes please create a new view", "sonnet", "followup-with-task"),
 ]
