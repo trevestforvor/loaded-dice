@@ -15,13 +15,9 @@ Loaded Dice routes prompts to different model tiers but gives users no visibilit
 
 ## Design
 
-### 1. Data Collection: Add `word_count` to `PromptClassified`
+### 1. Data Collection: `word_count` in `PromptClassified`
 
-The classifier's `match_tier()` already computes word count internally. Bubble it up through the return value and include it in the analytics event.
-
-**Changed files:**
-- `lib/patterns.py` — `match_tier()` includes `word_count` in its return dict
-- `hooks/classify-prompt.py` — logs `word_count` in the `PromptClassified` event
+**No changes needed.** The `classify-prompt.py` hook already logs `word_count` (via `len(prompt.split())`) and `prompt_preview` in every `PromptClassified` event. This was discovered during implementation — the spec originally assumed this needed to be added.
 
 **New event shape:**
 
