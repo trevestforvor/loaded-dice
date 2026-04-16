@@ -65,22 +65,11 @@ def main() -> None:
 
     state_dir = os.environ.get("LOADED_DICE_STATE_DIR", "~/.claude/loaded-dice")
     session = SessionState(state_dir=state_dir, timeout_minutes=config.get("session_timeout_minutes", 30))
-
-    # Disable LLM if env var set
-    if os.environ.get("LOADED_DICE_DISABLE_LLM"):
-        config["llm_fallback"] = False
-
-    result = classify(prompt, config, session)
-    tier = result["tier"]
-    confidence = result["confidence"]
-    signals = result["signals"]
-
     session_model = _detect_session_model(config)
 
-    # Follow-ups and confirmations don't need delegation — the session
-    # model should handle them inline. Skip the suggestion entirely.
-    is_followup = session.is_follow_up(prompt)
-    if is_followup:
+    # Follow-ups and confirmations aren't tasks — don't classify,
+    # don't suggest delegation. The session model handles them inline.
+    if session.is_follow_up(prompt):
         session.record_routing(session_model, session_model)
         session.save()
         analytics = AnalyticsLogger(
@@ -98,9 +87,17 @@ def main() -> None:
             "session_model": session_model,
             "delegated": False,
         })
-        # No output = no delegation suggestion
         print(json.dumps({"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": ""}}))
         return
+
+    # Disable LLM if env var set
+    if os.environ.get("LOADED_DICE_DISABLE_LLM"):
+        config["llm_fallback"] = False
+
+    result = classify(prompt, config, session)
+    tier = result["tier"]
+    confidence = result["confidence"]
+    signals = result["signals"]
 
     session.record_routing(tier, session_model)
 
