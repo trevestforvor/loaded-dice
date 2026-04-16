@@ -12,10 +12,12 @@ logger = logging.getLogger(__name__)
 DEFAULT_PATTERNS: dict[str, list[str]] = {
     "haiku": [
         # Questions — factual lookups
-        r"^what (is|are|does) ",
-        r"^how (do|does|to) ",
+        r"^what (is|are|does|did|was|were|happened|changed)\b",
+        r"^how (do|does|to|did|can|should) ",
+        r"^why (is|are|does|do|did|was|were|isn't|aren't|doesn't|won't|can't)\b",
+        r"^(does|is|are|did|will|should|do) (it|this|that|the|we|I|you)\b.{0,10}\b(need|have|want|require|supposed)\b",
         r"^(does|is|are|did|will|should) (it|this|that|the|we|I|you)\b",
-        r"^(can|do) (you|we|I)\b.{0,10}\b(show|tell|explain|check|see|look|find|get|read)\b",
+        r"^(can|do) (you|we|I)\b.{0,10}\b(show|tell|explain|check|see|look|find|get|read|verify|confirm)\b",
         r"^where (is|are|did|do|does) ",
         r"^(show|list|get) .{0,30}$",
         # Formatting / linting
@@ -33,6 +35,7 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         # Navigation / location
         r"\bwhere.{0,20}(put|find|located|defined|declared|import)\b",
         r"\b(look at|open|check)\b.{0,10}\b(the|this|that)\b.{0,20}$",
+        r"\b(take me|go to|navigate|cd|switch to)\b.{0,60}(directory|folder|dir|repo|project)\b",
         # Confirmation / clarification
         r"\bwhat.{0,5}(that|this) mean\b",
         r"\bexplain\b.{0,20}(this|that|the|error|warning)\b",
@@ -159,19 +162,27 @@ def match_tier(
         if matched:
             tier_signals[tier] = matched
 
-    # 2b. Generic question override: prompts like "what is a design pattern?"
-    # are educational/factual — if haiku matched a question pattern AND the
-    # prompt uses indefinite articles (a/an) suggesting a generic question,
-    # demote competing opus/sonnet single-signal matches.
-    # Specific questions ("what is THE architecture of THIS system") keep
-    # their opus/sonnet routing because they require analysis, not lookup.
+    # 2b. Question-form override: when haiku matched a question pattern,
+    # demote competing single-signal sonnet/opus matches.
+    # Two cases:
+    #   - Generic questions: "what is a design pattern?" (indefinite article)
+    #   - Deliberation questions: "do we need to...", "should we..."
+    # Specific analysis questions ("what is THE architecture") keep their
+    # opus routing when opus has strong (2+) signals.
     haiku_signals = tier_signals.get("haiku", [])
     _generic_question_re = re.compile(
         r"^(what|how|where|when|why|which|who)\b.{0,10}\b(is|are|does|do|did)\b.{0,10}\b(a|an)\b",
         re.IGNORECASE,
     )
-    is_generic_question = bool(_generic_question_re.match(prompt.strip()))
-    if is_generic_question and haiku_signals:
+    _deliberation_re = re.compile(
+        r"^(do|does|should|would|could|can|will) (we|I|you|it|this)\b.{0,10}\b(need|have|want|require|supposed|still|even|really|actually)\b",
+        re.IGNORECASE,
+    )
+    is_question_override = (
+        bool(_generic_question_re.match(prompt.strip()))
+        or bool(_deliberation_re.match(prompt.strip()))
+    )
+    if is_question_override and haiku_signals:
         for upper_tier in ("opus", "sonnet"):
             upper = tier_signals.get(upper_tier, [])
             if len(upper) < 2:

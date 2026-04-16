@@ -235,4 +235,17 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     # Genuine multi-scope → opus wins
     ("fix the crash and refactor the entire error handling system", "opus", "multi-signal"),
     ("review all modules and plan the migration", "opus", "multi-signal"),
+
+    # =========================================================================
+    # REAL-WORLD — actual prompts from live sessions
+    # =========================================================================
+    ("Where did we put the loaded dice project", "haiku", "real-world"),
+    ("Can you verify that it's still working?", "haiku", "real-world"),
+    ("Take me into the developer loaded dice directory", "haiku", "real-world"),
+    ("Do we need to change the classifier to account for that change", "haiku", "real-world"),
+    ("what changed?", "haiku", "real-world"),
+    ("why is this failing?", "haiku", "real-world"),
+    ("commit this", "sonnet", "real-world"),
+    ("push to main", "sonnet", "real-world"),
+    ("revert that last change", "sonnet", "real-world"),
 ]

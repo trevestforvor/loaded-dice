@@ -153,7 +153,7 @@ class SessionState:
                 r"^(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|"
                 r"delete|remove|run|update|install|close|start|stop|design|architect|plan|"
                 r"analyze|debug|make|move|rename|migrate|optimize|audit|configure|"
-                r"explain|describe|show|list|check|open|read|find|search|get)\b",
+                r"explain|describe|show|list|check|open|read|find|search|get|help)\b",
                 re.IGNORECASE,
             )
             if not _any_verb.match(stripped):
