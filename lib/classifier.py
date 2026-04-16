@@ -170,6 +170,18 @@ def classify(prompt: str, config: dict[str, Any], session: SessionState) -> dict
     signals: list = rule_result["signals"]
     source = "rules"
 
+    # Override force_min_word_count escalation when a lower tier has
+    # strong signals. Long prompts that clearly match haiku/sonnet
+    # patterns shouldn't be forced to opus just by word count.
+    if not signals and confidence == 0.7 and tier is not None:
+        # This was a force_min_word_count match (no signals, 0.7 confidence).
+        # Check if any lower-priority tier has actual pattern matches.
+        lower_result = match_tier(prompt, compiled, max_word_counts=max_wc)
+        if lower_result["tier"] is not None and lower_result["confidence"] >= threshold:
+            tier = lower_result["tier"]
+            confidence = lower_result["confidence"]
+            signals = lower_result["signals"]
+
     # ------------------------------------------------------------------
     # Layer 2 — context / momentum
     # ------------------------------------------------------------------

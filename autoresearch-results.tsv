@@ -1,2 +1,7 @@
 iteration	timestamp	action	metric_before	metric_after	result	notes
 0	2026-04-15T22:00:00	baseline	-	83.1	keep	12/71 mismatches: sonnet magnet effect, weak haiku recall on follow-ups/search, weak opus recall on planning/security/ios
+1	2026-04-15T22:05:00	broaden patterns + follow-up routing	83.1	97.2	keep	Fixed search, file-ops, audit, planning, follow-up patterns. is_follow_up routes to haiku in fallback
+2	2026-04-15T22:10:00	fix last 2 mismatches	97.2	100.0	keep	Added no/sure/nah to follow-ups, design+layer opus pattern. 71 prompts
+3	2026-04-15T22:15:00	stress test + overfitting fixes	100.0	100.0	keep	Added 18 stress prompts (89 total). Generic question override, ultra-short follow-ups, narrowed "all" opus
+4	2026-04-15T22:20:00	analytics rotation + tests	100.0	100.0	keep	Log rotation at 1MB, 8 analytics tests. 98 total tests
+5	2026-04-15T22:30:00	natural language patterns	100.0	100.0	keep	Real analytics showed 98% default rate. Broadened all tiers for natural phrasing. 105 benchmark prompts. Added prompt logging

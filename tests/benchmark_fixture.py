@@ -113,6 +113,8 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
 
     # Long but simple (should NOT be opus just because of length)
     ("what is the difference between let and var in Swift? I know var is mutable but I want to understand when to use each one and if there are performance implications", "haiku", "edge-long-simple"),
+    # Very long but clearly sonnet-tier (implementation, not architecture)
+    ("fix the bug in the login screen where the password field doesn't clear after a failed attempt. The user taps login, gets an error, but the password stays filled in. I've tried setting the text to empty in the error handler but it doesn't seem to work. The field is a SecureField in SwiftUI and the binding is to a published property on the view model. It works fine for the username field. " + "Here is the relevant code from LoginView. " * 10, "sonnet", "edge-long-sonnet"),
 
     # Ambiguous — could go either way, test current default behavior
     ("update the login screen", "sonnet", "edge-ambiguous"),
