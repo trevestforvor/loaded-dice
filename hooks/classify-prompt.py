@@ -120,6 +120,8 @@ def main() -> None:
     )
     analytics.log({
         "event": "PromptClassified",
+        "prompt_preview": prompt[:120],
+        "word_count": len(prompt.split()),
         "tier": tier,
         "confidence": confidence,
         "signals": signals,

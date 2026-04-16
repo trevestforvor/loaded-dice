@@ -11,44 +11,81 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PATTERNS: dict[str, list[str]] = {
     "haiku": [
+        # Questions — factual lookups
         r"^what (is|are|does) ",
         r"^how (do|does|to) ",
+        r"^(can|does|is|are|do|did|will|should) (it|this|that|the|we|I|you)\b",
+        r"^where (is|are|did|do|does) ",
         r"^(show|list|get) .{0,30}$",
+        # Formatting / linting
         r"\b(format|lint|prettify|beautify)\b",
-        r"\bgit (status|log|diff|add|commit|push|pull)\b",
-        r"\b(json|yaml|yml)\b.{0,20}$",
+        # Git
+        r"\bgit (status|log|diff|add|commit|push|pull|branch|stash|rebase|cherry-?pick)\b",
+        # Data formats
+        r"\b(json|yaml|yml|csv|xml|plist)\b.{0,20}$",
         r"\bregex\b",
         r"\bsyntax (for|of)\b",
+        # Search / lookup
         r"\b(grep|glob|search|find)\b.{0,40}(file|usage|instance|codebase|comment|todo|for\b)",
         r"\bread\b.{0,20}\b(file|contents?|readme|changelog|makefile|package)\b",
         r"\bsummar(y|ize)\b.{0,20}\b(file|function|class)\b",
+        # Navigation / location
+        r"\bwhere.{0,20}(put|find|located|defined|declared|import)\b",
+        r"\b(look at|open|check)\b.{0,10}\b(the|this|that)\b.{0,20}$",
+        # Confirmation / clarification
+        r"\bwhat.{0,5}(that|this) mean\b",
+        r"\bexplain\b.{0,20}(this|that|the|error|warning)\b",
     ],
     "sonnet": [
+        # Testing
         r"\b(write|add|create|implement)\b.{0,30}\b(test|spec)\b",
-        r"\b(fix|debug)\b.{0,30}\b(bug|error|issue)\b",
-        r"\brefactor\b.{0,30}(function|method|class|view)\b",
-        r"\b(review|check)\b.{0,20}\b(code|function|method|PR)\b",
-        r"\b(document|docstring|comment)\b",
-        r"\b(build|implement|create)\b.{0,30}(component|view|screen|endpoint)",
+        # Bug fixing
+        r"\b(fix|debug|solve|resolve)\b.{0,30}\b(bug|error|issue|problem|crash|warning)\b",
+        r"\b(fix|debug|solve)\b.{0,10}(this|that|the|it)\b",
+        # Refactoring (single scope)
+        r"\brefactor\b.{0,30}(function|method|class|view|module)\b",
+        # Code review
+        r"\b(review|check)\b.{0,20}\b(code|function|method|PR|pull request)\b",
+        # Documentation
+        r"\b(document|docstring|comment|annotate)\b",
+        # Implementation (single feature)
+        r"\b(build|implement|create|add|make|set up|setup)\b.{0,30}(component|view|screen|endpoint|button|modal|feature|page|form|field|handler|function|method|api|route)",
         r"\bauditor?\b",
+        # Update / modify (single scope)
+        r"\b(update|change|modify|rename|move)\b.{0,20}\b(the|this|that|a|an)\b",
+        # Natural language implementation requests
+        r"\b(can you|could you|please|help me|I need to|let's|let me)\b.{0,30}\b(add|fix|build|create|implement|write|make|update)\b",
     ],
     "opus": [
+        # Architecture / design
         r"\b(architect|architecture|design pattern|system design)\b",
+        # Multi-file / cross-cutting
         r"\b(across|multiple|all) (files?|components?|modules?)\b",
         r"\brefactor.{0,20}(codebase|project|entire)\b",
+        # Analysis / trade-offs
         r"\b(trade-?offs?|compare|pros? (and|&) cons?)\b",
         r"\b(analyze|evaluate|assess).{0,30}(option|approach|strateg|trade-?off)",
+        # Performance optimization
         r"\boptimiz(e|ation).{0,20}(performance|speed|memory)\b",
+        # Planning
         r"\b(plan|planning|roadmap)\b.{0,30}(implement|migration|phase|rollout|payment|system)\b",
+        # Security
         r"\b(security|vulnerab|audit)\b.{0,30}(review|scan|check|vulnerab|api|flow|code)\b",
+        # Design (complex scope)
         r"\bredesign\b.{0,20}(navigation|architecture|system|flow)\b",
         r"\bdesign\b.{0,30}\b(layer|schema|model).{0,30}\b(with|and|relationship|migration)\b",
+        # Complex debugging
         r"\b(debug|diagnos).{0,30}(race|deadlock|leak|crash)\b",
+        # Cross-domain
         r"\b(cross-?domain|end-?to-?end|full-?stack)\b",
+        # Whole-project scope
         r"\b(entire|whole) (app|application|project|codebase)\b",
         r"\b(update|change|modify|handle|manage) .{0,10}(all|every) .{0,20}(screen|view|page|endpoint|module|service)s?\b",
         r"\bacross all\b.{0,20}(screen|view|page|endpoint|module|service)s?\b",
         r"\bstructure\b.{0,30}\b(app|application|project|codebase)\b",
+        # Strategy / high-level
+        r"\b(strateg(y|ic|ize)|approach)\b.{0,20}\b(for|to|about)\b",
+        r"\bhow should (we|I|the)\b.{0,30}\b(structure|organize|handle|approach)\b",
     ],
 }
 

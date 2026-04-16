@@ -166,4 +166,29 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     # Questions about complex topics — these are analytical, not simple lookups
     ("what are trade-offs of microservices?", "opus", "stress-question-complex"),
     ("how does the security audit work?", "haiku", "stress-question-complex"),
+
+    # =========================================================================
+    # NATURAL LANGUAGE — real-world phrasing
+    # =========================================================================
+    # Haiku — conversational questions
+    ("can you show me the config file?", "haiku", "natural-haiku"),
+    ("where did we put the auth module?", "haiku", "natural-haiku"),
+    ("is this the right file?", "haiku", "natural-haiku"),
+    ("where is the main entry point defined?", "haiku", "natural-haiku"),
+    ("what does this error mean?", "haiku", "natural-haiku"),
+    ("explain this function", "haiku", "natural-haiku"),
+
+    # Sonnet — natural implementation requests
+    ("can you fix this crash?", "sonnet", "natural-sonnet"),
+    ("could you add a loading spinner to this view?", "sonnet", "natural-sonnet"),
+    ("help me implement the search feature", "sonnet", "natural-sonnet"),
+    ("I need to add a new API endpoint", "sonnet", "natural-sonnet"),
+    ("let's update the settings screen", "sonnet", "natural-sonnet"),
+    ("please fix the failing test", "sonnet", "natural-sonnet"),
+    ("change the background color of the header", "sonnet", "natural-sonnet"),
+
+    # Opus — natural complex requests
+    ("how should we structure the database for offline support?", "opus", "natural-opus"),
+    ("what's the best approach for handling auth across all our services?", "opus", "natural-opus"),
+    ("we need a strategy for migrating the entire backend", "opus", "natural-opus"),
 ]
