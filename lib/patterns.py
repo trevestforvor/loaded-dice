@@ -45,6 +45,10 @@ DEFAULT_PATTERNS: dict[str, list[str]] = {
         r"\bdesign\b.{0,30}\b(layer|schema|model).{0,30}\b(with|and|relationship|migration)\b",
         r"\b(debug|diagnos).{0,30}(race|deadlock|leak|crash)\b",
         r"\b(cross-?domain|end-?to-?end|full-?stack)\b",
+        r"\b(entire|whole) (app|application|project|codebase)\b",
+        r"\b(update|change|modify|handle|manage) .{0,10}(all|every) .{0,20}(screen|view|page|endpoint|module|service)s?\b",
+        r"\bacross all\b.{0,20}(screen|view|page|endpoint|module|service)s?\b",
+        r"\bstructure\b.{0,30}\b(app|application|project|codebase)\b",
     ],
 }
 
@@ -114,6 +118,24 @@ def match_tier(
         matched = [pat.pattern for pat in patterns if pat.search(prompt)]
         if matched:
             tier_signals[tier] = matched
+
+    # 2b. Generic question override: prompts like "what is a design pattern?"
+    # are educational/factual — if haiku matched a question pattern AND the
+    # prompt uses indefinite articles (a/an) suggesting a generic question,
+    # demote competing opus/sonnet single-signal matches.
+    # Specific questions ("what is THE architecture of THIS system") keep
+    # their opus/sonnet routing because they require analysis, not lookup.
+    haiku_signals = tier_signals.get("haiku", [])
+    _generic_question_re = re.compile(
+        r"^(what|how|where|when|why|which|who)\b.{0,10}\b(is|are|does|do|did)\b.{0,10}\b(a|an)\b",
+        re.IGNORECASE,
+    )
+    is_generic_question = bool(_generic_question_re.match(prompt.strip()))
+    if is_generic_question and haiku_signals:
+        for upper_tier in ("opus", "sonnet"):
+            upper = tier_signals.get(upper_tier, [])
+            if len(upper) < 2:
+                tier_signals.pop(upper_tier, None)
 
     # 3. Find highest-priority tier with signals (opus → sonnet → haiku)
     for tier in TIER_PRIORITY:

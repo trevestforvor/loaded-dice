@@ -123,12 +123,24 @@ class SessionState:
 
         Criteria:
         - Fewer than 8 words, AND
-        - Starts with a recognised follow-up trigger word/phrase.
+        - Starts with a recognised follow-up trigger word/phrase,
+          OR is an ultra-short acknowledgement (≤2 words).
         """
         words = prompt.split()
         if len(words) >= 8:
             return False
-        return bool(_FOLLOW_UP_PATTERNS.match(prompt.strip()))
+        if bool(_FOLLOW_UP_PATTERNS.match(prompt.strip())):
+            return True
+        # Ultra-short prompts (≤2 words) that aren't action verbs
+        # are almost always confirmations or reactions.
+        if len(words) <= 2:
+            _action_re = re.compile(
+                r"^(fix|build|create|implement|add|write|deploy|ship|refactor|test|review|delete|remove|explain|describe|show|list|run|check|update|install|open|close|start|stop)\b",
+                re.IGNORECASE,
+            )
+            if not _action_re.match(prompt.strip()):
+                return True
+        return False
 
     def save(self) -> None:
         """Persist state to disk, capping tier_history at 50 entries."""

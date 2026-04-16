@@ -131,4 +131,39 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("set up push notifications", "sonnet", "ios"),
     ("design the SwiftData model layer with relationships and migrations", "opus", "ios"),
     ("architect the offline-first sync strategy using CloudKit", "opus", "ios"),
+
+    # =========================================================================
+    # STRESS TEST — adversarial edge cases for overfitting detection
+    # =========================================================================
+    # Haiku that contain opus-sounding words in non-opus contexts
+    ("what is a design pattern?", "haiku", "stress-false-opus"),
+    ("show me the security settings", "haiku", "stress-false-opus"),
+    ("what does optimize mean?", "haiku", "stress-false-opus"),
+
+    # Sonnet that look like haiku (short but require implementation)
+    ("add a button", "sonnet", "stress-short-sonnet"),
+    ("create a modal", "sonnet", "stress-short-sonnet"),
+    ("fix the crash", "sonnet", "stress-short-sonnet"),
+    ("write the migration", "sonnet", "stress-short-sonnet"),
+
+    # Sonnet that look like opus (complex words but single-scope)
+    ("refactor the login view to use MVVM", "sonnet", "stress-false-opus-sonnet"),
+    ("add error handling to the API call", "sonnet", "stress-false-opus-sonnet"),
+
+    # Opus that look like sonnet (no explicit opus keywords)
+    ("how should we structure the entire app to support offline mode?", "opus", "stress-hidden-opus"),
+    ("what's the best way to handle data across all our screens?", "opus", "stress-hidden-opus"),
+
+    # Extremely short valid prompts
+    ("thanks", "haiku", "stress-ultra-short"),
+    ("?", "haiku", "stress-ultra-short"),
+    ("hmm", "haiku", "stress-ultra-short"),
+
+    # Multi-intent prompts (contain signals from multiple tiers)
+    ("fix the login bug and redesign the auth architecture", "opus", "stress-multi-intent"),
+    ("write tests for the API and review the error handling across all modules", "opus", "stress-multi-intent"),
+
+    # Questions about complex topics — these are analytical, not simple lookups
+    ("what are trade-offs of microservices?", "opus", "stress-question-complex"),
+    ("how does the security audit work?", "haiku", "stress-question-complex"),
 ]
