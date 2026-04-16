@@ -218,4 +218,21 @@ BENCHMARK_PROMPTS: list[tuple[str, str, str]] = [
     ("wait, debug the memory leak", "opus", "followup-with-task"),
     ("then deploy it", "sonnet", "followup-with-task"),
     ("yes please create a new view", "sonnet", "followup-with-task"),
+
+    # =========================================================================
+    # MULTI-SIGNAL — prompts with keywords from multiple tiers
+    # =========================================================================
+    # Question form + implementation intent → implementation tier wins
+    ("what is the best way to fix this bug?", "sonnet", "multi-signal"),
+    ("how do I add a test for this function?", "sonnet", "multi-signal"),
+    ("where should I implement the handler?", "sonnet", "multi-signal"),
+    # Question + opus-level analysis → opus wins
+    ("how does the trade-off between speed and safety work here?", "opus", "multi-signal"),
+    ("what is the architecture of the auth system?", "opus", "multi-signal"),
+    # Implementation + architectural words → implementation tier wins
+    ("fix the bug in the architecture docs", "sonnet", "multi-signal"),
+    ("create a performance test suite", "sonnet", "multi-signal"),
+    # Genuine multi-scope → opus wins
+    ("fix the crash and refactor the entire error handling system", "opus", "multi-signal"),
+    ("review all modules and plan the migration", "opus", "multi-signal"),
 ]
