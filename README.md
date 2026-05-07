@@ -102,7 +102,13 @@ Project config merges with and overrides global config.
 
 **Analytics:**
 
-Loaded Dice logs all classifications to `~/.claude/loaded-dice/analytics.ndjson`. Use `/dice-stats` to view routing patterns and improve over time.
+Loaded Dice logs all classifications to `~/.claude/loaded-dice/analytics.ndjson`. Use `/loaded-dice:dice-stats` to view routing patterns and improve over time.
+
+## Requirements
+
+- Python 3.10+ (the hooks use only the standard library)
+- The [`anthropic`](https://pypi.org/project/anthropic/) Python package is required *only* when `llm_fallback` is enabled (the default). When the package is missing, the LLM layer is skipped silently and classification falls back to the rules / momentum layers.
+- An `ANTHROPIC_API_KEY` in the environment for the LLM fallback. If unset (or you set `LOADED_DICE_DISABLE_LLM=1`), the LLM layer is skipped.
 
 ## License
 
