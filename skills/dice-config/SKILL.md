@@ -1,7 +1,7 @@
 ---
 name: dice-config
 description: Show active Loaded Dice configuration (merged global + project)
-user_invokable: true
+allowed-tools: Read
 ---
 
 # /dice-config

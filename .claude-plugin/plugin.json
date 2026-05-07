@@ -8,12 +8,5 @@
   "homepage": "https://github.com/trevestforvor/loaded-dice",
   "repository": "https://github.com/trevestforvor/loaded-dice",
   "license": "MIT",
-  "keywords": ["model-routing", "cost-optimization", "subagent", "haiku", "sonnet", "opus"],
-  "skills": [
-    "./skills/dice-stats/SKILL.md",
-    "./skills/dice-config/SKILL.md",
-    "./skills/dice-bypass/SKILL.md",
-    "./skills/dice-mode/SKILL.md",
-    "./skills/dice-switch/SKILL.md"
-  ]
+  "keywords": ["model-routing", "cost-optimization", "subagent", "haiku", "sonnet", "opus"]
 }
