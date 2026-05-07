@@ -13,8 +13,8 @@
     },
     "prompt_mode": {
       "type": "string",
-      "description": "How loaded-dice surfaces routing suggestions",
-      "enum": ["suggest", "auto", "silent"]
+      "description": "How loaded-dice surfaces routing suggestions: 'suggest' is advisory, 'instruct' is directive",
+      "enum": ["suggest", "instruct"]
     },
     "confidence_threshold": {
       "type": "number",
@@ -109,8 +109,7 @@
           "description": "Prompts over this word count are forced to this tier (opus)",
           "minimum": 1
         }
-      },
-      "required": ["mode", "keywords", "patterns", "remove_keywords", "remove_patterns"]
+      }
     }
   }
 }

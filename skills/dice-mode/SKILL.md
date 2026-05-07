@@ -1,7 +1,9 @@
 ---
 name: dice-mode
 description: Switch Loaded Dice prompt mode between suggest and instruct
-user_invokable: true
+argument-hint: "<suggest|instruct>"
+disable-model-invocation: true
+allowed-tools: Read Write
 ---
 
 # /dice-mode

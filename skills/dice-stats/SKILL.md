@@ -1,7 +1,7 @@
 ---
 name: dice-stats
 description: Show Loaded Dice routing statistics — tier distribution, delegation count, mismatch rate, cost savings estimates, and complexity matches
-user_invokable: true
+allowed-tools: Read
 ---
 
 # /dice-stats

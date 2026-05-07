@@ -1,7 +1,6 @@
 ---
 name: dice-bypass
-description: Skip Loaded Dice classification for the next prompt
-user_invokable: true
+description: Explain how to skip Loaded Dice classification for the next prompt by using the bypass prefix
 ---
 
 # /dice-bypass

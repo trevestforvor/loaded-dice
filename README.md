@@ -4,9 +4,11 @@ Intelligent agent routing for Claude Code — automatically delegate tasks to th
 
 ## Install
 
-```bash
-claude plugin marketplace add trevestforvor/loaded-dice
-claude plugin install loaded-dice
+Inside Claude Code, run:
+
+```
+/plugin marketplace add trevestforvor/loaded-dice
+/plugin install loaded-dice@loaded-dice
 ```
 
 ## Quick Start
@@ -23,16 +25,18 @@ Classification happens automatically. You can adjust the mode or disable routing
 
 ## Commands
 
+Plugin skills are namespaced; type the full command in Claude Code:
+
 | Command | Effect |
 |---------|--------|
-| `/dice-stats` | View routing statistics — tier distribution, delegation count, mismatch rate |
-| `/dice-config` | Show merged configuration (global + project) |
-| `/dice-bypass` | Learn how to skip classification for the next prompt |
-| `/dice-mode suggest` | Switch to advisory mode ("Consider delegating...") |
-| `/dice-mode instruct` | Switch to directive mode ("Delegate to... Do not answer directly.") |
-| `/dice-switch haiku` | Force session to Haiku model |
-| `/dice-switch sonnet` | Force session to Sonnet model |
-| `/dice-switch opus` | Force session to Opus model |
+| `/loaded-dice:dice-stats` | View routing statistics — tier distribution, delegation count, mismatch rate |
+| `/loaded-dice:dice-config` | Show merged configuration (global + project) |
+| `/loaded-dice:dice-bypass` | Learn how to skip classification for the next prompt |
+| `/loaded-dice:dice-mode suggest` | Switch to advisory mode ("Consider delegating...") |
+| `/loaded-dice:dice-mode instruct` | Switch to directive mode ("Delegate to... Do not answer directly.") |
+| `/loaded-dice:dice-switch haiku` | Force session to Haiku model |
+| `/loaded-dice:dice-switch sonnet` | Force session to Sonnet model |
+| `/loaded-dice:dice-switch opus` | Force session to Opus model |
 
 ## Bypass Classification
 
@@ -50,21 +54,21 @@ The bypass prefix is configurable via `~/.claude/loaded-dice.json`.
 
 ```json
 {
-  "enabled": true,
   "prompt_mode": "instruct",
   "bypass_prefix": "~",
-  "tier_thresholds": {
-    "haiku_context_tokens": 1000,
-    "sonnet_context_tokens": 5000,
-    "context_expansion_factor": 2.5
-  },
-  "classification": {
-    "rules_weight": 0.4,
-    "context_weight": 0.35,
-    "llm_weight": 0.25
+  "confidence_threshold": 0.7,
+  "default_tier": "sonnet",
+  "llm_fallback": true,
+  "analytics": true,
+  "tiers": {
+    "haiku": { "max_word_count": 80 },
+    "opus":  { "force_min_word_count": 250 }
   }
 }
 ```
+
+See `schema/loaded-dice.schema.json` for the full set of fields and per-tier
+keyword/pattern overrides.
 
 ### Project Config (`.claude/loaded-dice.json`)
 
@@ -72,10 +76,9 @@ Override global settings per project. Example:
 
 ```json
 {
-  "enabled": true,
   "prompt_mode": "suggest",
-  "tier_thresholds": {
-    "haiku_context_tokens": 500
+  "tiers": {
+    "haiku": { "keywords": ["readme", "changelog"] }
   }
 }
 ```
@@ -86,10 +89,10 @@ Project config merges with and overrides global config.
 
 **Classification Pipeline:**
 
-1. **Rules-based** (40% weight) — Check prompt patterns, keywords, file count
-2. **Context-aware** (35% weight) — Estimate codebase complexity from recent files
-3. **LLM-guided** (25% weight) — Run a fast classification prompt on ambiguous tasks
-4. **Mismatch detection** — Track when human judgment differs from classification
+1. **Rules-based** — Match prompt against per-tier keyword and regex patterns; multiple signals raise confidence (`opus` > `sonnet` > `haiku` priority).
+2. **Context / momentum** — Inherit the recent tier on conversational follow-ups; boost confidence when momentum agrees with the rule match.
+3. **LLM fallback** — When confidence stays below the threshold, ask Haiku to classify.
+4. **Drift detection** — Track when the routed tier diverges from the session model and offer to switch after repeated drift.
 
 **Delegation:**
 
